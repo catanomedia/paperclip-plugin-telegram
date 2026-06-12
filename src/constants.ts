@@ -4,6 +4,7 @@ export const MAX_AGENTS_PER_THREAD = 5;
 
 export const DEFAULT_CONFIG = {
   telegramBotTokenRef: "",
+  defaultChatIdRef: "",
   defaultChatId: "",
   approvalsChatId: "",
   approvalsTopicId: "",

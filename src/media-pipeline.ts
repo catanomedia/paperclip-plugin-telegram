@@ -192,8 +192,8 @@ async function transcribeAudio(
   const audioRes = await fetch(downloadUrl);
   const audioBuffer = Buffer.from(await audioRes.arrayBuffer());
 
-  // 3. Resolve the OpenAI API key from Paperclip secrets
-  const apiKey = await ctx.secrets.resolve(transcriptionApiKeyRef);
+  // 3. Use transcription API key directly (ctx.secrets.resolve disabled, PR #5429)
+  const apiKey = transcriptionApiKeyRef;
 
   // 4. Build multipart form data manually (native FormData + Blob works in Node 18+)
   const formData = new FormData();

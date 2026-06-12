@@ -30,7 +30,6 @@ const manifest: PaperclipPluginManifestV1 = {
     "plugin.state.read",
     "plugin.state.write",
     "http.outbound",
-    "secrets.read-ref",
     "activity.log.write",
     "metrics.write",
     "jobs.schedule",

@@ -10,7 +10,8 @@
     "skipLibCheck": true,
     "jsx": "react-jsx",
     "declaration": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "types": ["node"]
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules", "dist"]

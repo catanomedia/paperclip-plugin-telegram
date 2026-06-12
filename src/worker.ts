@@ -53,6 +53,7 @@ import { buildPaperclipAuthHeaders, fetchPaperclipApi } from "./paperclip-api.js
 
 type TelegramConfig = {
   telegramBotTokenRef: string;
+  defaultChatIdRef: string;
   defaultChatId: string;
   approvalsChatId: string;
   approvalsTopicId: string;
@@ -214,19 +215,13 @@ async function resolveBoardApiToken(
     });
   }
 
+  // Return the first available direct token value (no secret-ref UUID resolution;
+  // ctx.secrets.resolve() is disabled until company-scoped plugin config lands).
   const seen = new Set<string>();
   for (const candidate of candidates) {
     if (seen.has(candidate.ref)) continue;
     seen.add(candidate.ref);
-    try {
-      return await ctx.secrets.resolve(candidate.ref);
-    } catch (err) {
-      ctx.logger.warn("Failed to resolve board API token secret", {
-        source: candidate.source,
-        companyId,
-        error: String(err),
-      });
-    }
+    if (candidate.ref) return candidate.ref;
   }
 
   return undefined;
@@ -361,7 +356,15 @@ const plugin = definePlugin({
       return;
     }
 
-    const token = await ctx.secrets.resolve(config.telegramBotTokenRef);
+    // Use the bot token directly from config — ctx.secrets.resolve() is disabled
+    // until company-scoped plugin config lands (PR #5429). The config field now
+    // holds the actual token value, not a secret-ref UUID.
+    const token = config.telegramBotTokenRef;
+
+    // Resolve defaultChatId from a direct value when not set directly
+    if (!config.defaultChatId && config.defaultChatIdRef) {
+      config.defaultChatId = config.defaultChatIdRef;
+    }
 
     // --- Register bot commands with Telegram ---
     if (config.enableCommands) {
